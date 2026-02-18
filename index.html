@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NO MAN'S LAND — Digital Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Barlow:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #03050a;
+  --surface: #070d16;
+  --surface2: #0a1422;
+  --border: #0e2030;
+  --border2: #1a3a50;
+  --accent: #e8c547;
+  --accent2: #ff4040;
+  --accent3: #00b8d4;
+  --text: #d0e4ef;
+  --muted: #3a5a6e;
+  --muted2: #5a7a8e;
+  --glow-y: 0 0 24px rgba(232,197,71,0.35);
+  --glow-r: 0 0 24px rgba(255,64,64,0.35);
+  --glow-b: 0 0 24px rgba(0,184,212,0.35);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;overflow-x:hidden;min-height:100vh}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent)}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9998;opacity:.5}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px);pointer-events:none;z-index:9997}
+
+/* CURSOR */
+.cur{position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
+.cur-dot{width:8px;height:8px;background:var(--accent);border-radius:50%;box-shadow:var(--glow-y);transition:transform .15s}
+.cur-ring{width:32px;height:32px;border:1px solid rgba(232,197,71,.35);border-radius:50%;transition:width .3s,height .3s}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:linear-gradient(180deg,rgba(3,5,10,.98) 0%,rgba(3,5,10,.6) 100%);border-bottom:1px solid rgba(232,197,71,.08);backdrop-filter:blur(12px)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:8px;color:var(--accent);text-shadow:var(--glow-y);text-decoration:none;position:relative}
+.logo::after{content:'NO MAN\'S LAND';position:absolute;inset:0;color:var(--accent);filter:blur(6px);opacity:.3}
+.nav-right{display:flex;align-items:center;gap:24px}
+.nav-btn{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;color:var(--muted2);background:none;border:none;cursor:pointer;transition:color .2s;padding:4px 0;position:relative}
+.nav-btn::after{content:'';position:absolute;bottom:-2px;left:0;right:100%;height:1px;background:var(--accent);transition:right .3s}
+.nav-btn:hover{color:var(--accent)}.nav-btn:hover::after{right:0}
+.nav-discord{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--bg);background:var(--accent);border:none;padding:8px 20px;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);cursor:pointer;text-transform:uppercase;text-decoration:none;display:inline-block;transition:background .2s,box-shadow .2s;font-weight:700}
+.nav-discord:hover{background:#f5d060;box-shadow:var(--glow-y)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:80px 48px 60px;position:relative;overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(232,197,71,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(232,197,71,.025) 1px,transparent 1px);background-size:80px 80px;animation:gridDrift 25s linear infinite}
+@keyframes gridDrift{to{transform:translateY(80px)}}
+.hero-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,transparent 40%,rgba(3,5,10,.9) 100%)}
+.hero-content{position:relative;z-index:2;max-width:640px}
+.hero-eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:5px;color:var(--accent);text-transform:uppercase;margin-bottom:28px;display:flex;align-items:center;gap:16px;animation:fadeUp .6s ease both}
+.hero-eyebrow::before{content:'';width:32px;height:1px;background:var(--accent);box-shadow:var(--glow-y)}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(80px,13vw,160px);line-height:.88;letter-spacing:3px;margin-bottom:32px;animation:fadeUp .6s .08s ease both}
+.hero-title .t1{display:block;color:var(--text)}
+.hero-title .t2{display:block;color:var(--accent);text-shadow:var(--glow-y);position:relative}
+.hero-title .t2::before{content:attr(data-t);position:absolute;inset:0;color:var(--accent2);clip-path:polygon(0 40%,100% 40%,100% 60%,0 60%);transform:translateX(4px);opacity:0;animation:glitch 5s infinite 2s}
+@keyframes glitch{0%,92%,100%{opacity:0;transform:translateX(0)}93%{opacity:.7;transform:translateX(5px)}94%{opacity:.7;transform:translateX(-5px)}95%{opacity:.3;transform:translateX(3px)}}
+.hero-title .t3{display:block;color:var(--muted)}
+.hero-desc{font-size:17px;font-weight:300;color:var(--muted2);max-width:440px;line-height:1.65;margin-bottom:48px;animation:fadeUp .6s .16s ease both}
+.hero-desc strong{color:var(--text);font-weight:600}
+.hero-actions{display:flex;gap:14px;animation:fadeUp .6s .24s ease both}
+.btn{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;display:inline-block;padding:14px 36px;cursor:pointer;border:none;transition:all .25s}
+.btn-primary{color:var(--bg);background:var(--accent);clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);font-weight:700}
+.btn-primary:hover{background:#f5d060;box-shadow:var(--glow-y);transform:translateY(-2px)}
+.btn-ghost{color:var(--accent);background:transparent;border:1px solid rgba(232,197,71,.25)}
+.btn-ghost:hover{border-color:var(--accent);background:rgba(232,197,71,.05);box-shadow:var(--glow-y)}
+.hero-badge{position:absolute;right:80px;top:50%;transform:translateY(-50%);z-index:2;display:flex;flex-direction:column;gap:28px;animation:fadeUp .8s .4s ease both}
+.stat{text-align:right;border-right:2px solid var(--accent);padding-right:16px;position:relative}
+.stat::before{content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%);width:8px;height:8px;background:var(--accent);border-radius:50%;box-shadow:var(--glow-y)}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:38px;color:var(--accent);line-height:1;text-shadow:var(--glow-y)}
+.stat-l{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--muted);text-transform:uppercase}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* TICKER */
+.ticker{background:var(--accent);overflow:hidden;padding:8px 0;position:relative;z-index:10}
+.ticker-track{display:flex;animation:tickerScroll 28s linear infinite;white-space:nowrap}
+.ticker-item{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:4px;color:var(--bg);text-transform:uppercase;padding:0 36px;font-weight:700}
+.ticker-sep{color:rgba(0,0,0,.3)}
+@keyframes tickerScroll{to{transform:translateX(-50%)}}
+
+/* SECTION */
+.section{padding:90px 48px}
+.sec-head{margin-bottom:56px}
+.sec-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:5px;color:var(--accent);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.sec-label::before{content:'//';color:var(--muted)}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:3px;line-height:1}
+.sec-head-row{display:flex;align-items:flex-end;justify-content:space-between}
+
+/* FILTER BAR */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px}
+.filter-btn{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:7px 16px;background:transparent;border:1px solid var(--border2);color:var(--muted2);cursor:pointer;transition:all .2s}
+.filter-btn.active,.filter-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(232,197,71,.05)}
+
+/* PRODUCTS */
+#products-section{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2px}
+.product-card{background:var(--bg);border:1px solid var(--border);overflow:hidden;position:relative;cursor:pointer;transition:border-color .3s,transform .3s}
+.product-card:hover{border-color:rgba(232,197,71,.4);transform:translateY(-4px);z-index:2}
+.product-card:hover .pc-overlay{opacity:1}
+.product-card:hover .pc-buy{transform:translateY(0);opacity:1}
+.product-card.coming-soon{opacity:.6;cursor:default}
+.product-card.coming-soon:hover{transform:none;border-color:var(--border)}
+.pc-img{height:220px;position:relative;overflow:hidden;background:var(--surface2);display:flex;align-items:center;justify-content:center}
+.pc-img img{width:100%;height:100%;object-fit:cover;display:block}
+.pc-img-placeholder{font-size:64px;opacity:.12;font-family:'Bebas Neue',sans-serif;letter-spacing:4px;color:var(--accent);user-select:none}
+.pc-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(232,197,71,.08),rgba(0,184,212,.05));opacity:0;transition:opacity .3s}
+.pc-badge{position:absolute;top:14px;left:14px;font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;padding:3px 10px;text-transform:uppercase;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%)}
+.badge-new{background:var(--accent3);color:var(--bg)}.badge-hot{background:var(--accent2);color:#fff}.badge-sale{background:var(--accent);color:var(--bg)}.badge-limited{background:var(--accent3);color:var(--bg)}.badge-soon{background:var(--muted);color:var(--bg)}
+.pc-buy{position:absolute;bottom:0;left:0;right:0;background:rgba(232,197,71,.92);color:var(--bg);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;text-align:center;padding:11px;text-transform:uppercase;font-weight:700;transform:translateY(100%);opacity:0;transition:transform .3s,opacity .3s}
+.pc-body{padding:20px 22px 22px;border-top:1px solid var(--border)}
+.pc-cat{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
+.pc-name{font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.3}
+.pc-desc{font-size:13px;font-weight:300;color:var(--muted2);margin-bottom:16px;line-height:1.5}
+.pc-foot{display:flex;align-items:center;justify-content:space-between}
+.pc-price{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--accent);letter-spacing:2px;text-shadow:var(--glow-y)}
+.pc-stock{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.empty-state{grid-column:1/-1;text-align:center;padding:80px 20px;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:3px;color:var(--muted);text-transform:uppercase}
+
+/* SKELETON */
+.loading-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2px}
+.skeleton{background:var(--surface2);border:1px solid var(--border);overflow:hidden;position:relative}
+.skeleton::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(232,197,71,.03),transparent);animation:shimmer 1.5s infinite}
+@keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.skel-img{height:220px}.skel-body{padding:20px}.skel-line{height:12px;background:var(--border2);border-radius:2px;margin-bottom:10px}.skel-line.short{width:60%}
+
+/* TRUST */
+.trust{background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.trust-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+.trust-item{padding:48px 36px;border-right:1px solid var(--border);position:relative;overflow:hidden;transition:background .3s}
+.trust-item:last-child{border-right:none}
+.trust-item:hover{background:rgba(232,197,71,.02)}
+.trust-num{position:absolute;top:-10px;right:-5px;font-family:'Bebas Neue',sans-serif;font-size:100px;color:var(--accent);opacity:.025;line-height:1;pointer-events:none;transition:opacity .3s}
+.trust-item:hover .trust-num{opacity:.05}
+.trust-icon{font-size:26px;margin-bottom:16px;display:block}
+.trust-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--text);margin-bottom:10px}
+.trust-desc{font-size:13px;font-weight:300;color:var(--muted2);line-height:1.6}
+
+/* CTA */
+.cta-section{padding:100px 48px;text-align:center;position:relative;overflow:hidden}
+.cta-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(232,197,71,.04) 0%,transparent 60%)}
+.cta-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,8vw,96px);letter-spacing:4px;margin-bottom:20px;position:relative;z-index:2}
+.cta-title span{color:var(--accent);text-shadow:var(--glow-y)}
+.cta-sub{font-size:15px;color:var(--muted2);max-width:460px;margin:0 auto 40px;line-height:1.65;position:relative;z-index:2}
+.cta-btns{display:flex;justify-content:center;gap:14px;position:relative;z-index:2}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:36px 48px;display:flex;align-items:center;justify-content:space-between}
+.foot-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:6px;color:var(--muted)}
+.foot-copy{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.foot-links{display:flex;gap:20px}
+.foot-links a{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);text-decoration:none;text-transform:uppercase;transition:color .2s;cursor:pointer}
+.foot-links a:hover{color:var(--accent)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(3,5,10,.92);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-close{position:absolute;top:16px;right:20px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);background:none;border:none;cursor:pointer;text-transform:uppercase;transition:color .2s}
+.modal-close:hover{color:var(--accent2)}
+
+/* BUY MODAL */
+.buy-modal{background:var(--surface);border:1px solid rgba(232,197,71,.25);max-width:520px;width:100%;position:relative;clip-path:polygon(16px 0%,100% 0%,calc(100% - 16px) 100%,0% 100%);animation:modalIn .3s ease}
+.modal-head{padding:32px 32px 24px;border-bottom:1px solid var(--border)}
+.modal-eyebrow{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:4px;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
+.modal-name{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;color:var(--text);line-height:1}
+.modal-price{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);margin-top:4px;text-shadow:var(--glow-y)}
+.modal-body{padding:24px 32px 32px}
+.modal-desc{font-size:13px;font-weight:300;color:var(--muted2);line-height:1.65;margin-bottom:24px;white-space:pre-line}
+.modal-contact{background:var(--bg);border:1px solid var(--border);padding:16px;margin-bottom:20px}
+.modal-contact-label{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.modal-discord-tag{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:1px}
+.discord-input-group{margin-bottom:20px}
+.discord-input-label{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--muted2);text-transform:uppercase;display:block;margin-bottom:6px}
+.discord-input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;padding:10px 14px;outline:none;transition:border-color .2s;letter-spacing:1px}
+.discord-input:focus{border-color:var(--accent)}
+.discord-input::placeholder{color:var(--muted)}
+.modal-actions{display:flex;flex-direction:column;gap:10px}
+.btn-discord{display:flex;align-items:center;justify-content:center;gap:10px;background:#5865F2;color:#fff;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;padding:14px;border:none;cursor:pointer;transition:background .2s,box-shadow .2s;font-weight:700}
+.btn-discord:hover{background:#4752c4;box-shadow:0 0 20px rgba(88,101,242,.4)}
+.btn-cancel{background:transparent;color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;border:1px solid var(--border);padding:12px;cursor:pointer;transition:all .2s}
+.btn-cancel:hover{color:var(--accent2);border-color:rgba(255,64,64,.3)}
+
+/* LOGIN MODAL */
+.login-modal{background:var(--surface);border:1px solid rgba(232,197,71,.2);max-width:400px;width:100%;clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%);animation:modalIn .3s ease}
+.login-head{padding:32px 32px 24px;border-bottom:1px solid var(--border)}
+.login-title{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:4px;color:var(--accent)}
+.login-sub{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);margin-top:6px;text-transform:uppercase}
+.login-body{padding:28px 32px 32px}
+.login-error{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--accent2);text-transform:uppercase;margin-bottom:14px;display:none}
+
+/* ADMIN MODAL */
+.admin-modal{background:var(--surface);border:1px solid rgba(232,197,71,.2);width:100%;max-width:700px;max-height:92vh;overflow-y:auto;position:relative;animation:modalIn .3s ease}
+.admin-modal::-webkit-scrollbar{width:3px}
+.admin-modal::-webkit-scrollbar-thumb{background:var(--accent)}
+.admin-head{padding:24px 32px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:10}
+.admin-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--accent)}
+.admin-tabs{display:flex;gap:0;border-bottom:1px solid var(--border)}
+.admin-tab{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;padding:14px 24px;background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;margin-bottom:-1px}
+.admin-tab.active,.admin-tab:hover{color:var(--accent);border-bottom-color:var(--accent)}
+.admin-section{padding:20px 32px;border-bottom:1px solid var(--border)}
+.admin-section-title{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-bottom:18px}
+.form-group{margin-bottom:14px}
+.form-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted2);text-transform:uppercase;display:block;margin-bottom:6px}
+.form-input{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:'Barlow',sans-serif;font-size:14px;padding:10px 14px;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--accent)}
+.form-input::placeholder{color:var(--muted)}
+textarea.form-input{resize:vertical;min-height:80px}
+select.form-input{cursor:pointer}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.img-upload-area{border:2px dashed var(--border2);padding:28px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative}
+.img-upload-area:hover{border-color:var(--accent);background:rgba(232,197,71,.02)}
+.img-upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.img-upload-icon{font-size:26px;margin-bottom:8px}
+.img-upload-text{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.img-preview{width:100%;max-height:140px;object-fit:cover;margin-top:12px;display:none}
+.form-actions{padding:16px 32px 24px;display:flex;gap:10px}
+.btn-save{flex:1;background:var(--accent);color:var(--bg);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;border:none;padding:13px;cursor:pointer;font-weight:700;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:background .2s}
+.btn-save:hover{background:#f5d060}.btn-save:disabled{opacity:.5;cursor:not-allowed}
+.btn-delete-prod{background:transparent;color:var(--accent2);border:1px solid rgba(255,64,64,.3);padding:13px 24px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-delete-prod:hover{background:rgba(255,64,64,.1);border-color:var(--accent2)}
+.prod-list{display:flex;flex-direction:column;gap:2px}
+.prod-item{display:flex;align-items:center;gap:14px;background:var(--bg);border:1px solid var(--border);padding:12px 14px;cursor:pointer;transition:border-color .2s}
+.prod-item:hover{border-color:rgba(232,197,71,.3)}
+.prod-item-img{width:44px;height:44px;object-fit:cover;flex-shrink:0;background:var(--surface2)}
+.prod-item-name{font-size:14px;font-weight:600;color:var(--text)}
+.prod-item-price{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--accent);margin-left:auto;flex-shrink:0}
+.prod-item-cat{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:2px}
+
+/* INQUIRY TABLE */
+.inquiry-table{width:100%;border-collapse:collapse}
+.inquiry-table th{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.inquiry-table td{font-size:13px;color:var(--text);padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.inquiry-table tr:hover td{background:rgba(232,197,71,.02)}
+.inq-product{font-weight:600;color:var(--text)}
+.inq-price{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--accent)}
+.inq-user{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent3)}
+.inq-date{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted)}
+.status-badge{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;padding:3px 8px;text-transform:uppercase;cursor:pointer;border:none;transition:all .2s}
+.status-pending{background:rgba(232,197,71,.15);color:var(--accent);border:1px solid rgba(232,197,71,.3)}
+.status-done{background:rgba(0,184,212,.1);color:var(--accent3);border:1px solid rgba(0,184,212,.3)}
+.status-cancelled{background:rgba(255,64,64,.1);color:var(--accent2);border:1px solid rgba(255,64,64,.3)}
+.inq-empty{padding:32px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase}
+
+/* TOAST */
+.toast{position:fixed;bottom:32px;right:32px;z-index:9000;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:14px 24px;border-left:3px solid var(--accent);background:var(--surface);color:var(--text);transform:translateX(120%);transition:transform .3s ease;max-width:300px}
+.toast.show{transform:translateX(0)}.toast.error{border-color:var(--accent2)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
+.reveal.vis{opacity:1;transform:translateY(0)}
+
+/* PANEL TABS */
+.tab-content{display:none}.tab-content.active{display:block}
+
+@media(max-width:768px){
+  nav{padding:0 20px}.hero{padding:80px 20px 60px}.hero-badge{display:none}
+  .hero-title{font-size:clamp(64px,18vw,100px)}.section{padding:60px 20px}
+  .trust-grid{grid-template-columns:1fr 1fr}.trust-item{border-bottom:1px solid var(--border)}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:28px 20px}
+  .admin-modal{max-width:100%;margin:0 8px}.form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="cur" id="curDot"><div class="cur-dot"></div></div>
+<div class="cur" id="curRing"><div class="cur-ring"></div></div>
+<div class="toast" id="toast"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">NO MAN'S LAND</a>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="smoothTo('#products-section')">Shop</button>
+    <button class="nav-btn" onclick="openLogin()">Admin</button>
+    <a href="https://discord.gg/yRDud7tW" target="_blank" class="nav-discord">Discord</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Digital Goods — All Categories</div>
+    <h1 class="hero-title">
+      <span class="t1">NO</span>
+      <span class="t2" data-t="MAN'S">MAN'S</span>
+      <span class="t3">LAND</span>
+    </h1>
+    <p class="hero-desc">Your one-stop shop for <strong>premium digital products</strong>. Instant delivery, trusted source, real prices.</p>
+    <div class="hero-actions">
+      <a href="#products-section" class="btn btn-primary">Browse Store</a>
+      <a href="https://discord.gg/yRDud7tW" target="_blank" class="btn btn-ghost">Join Discord</a>
+    </div>
+  </div>
+  <div class="hero-badge">
+    <div class="stat"><div class="stat-n" id="statProducts">—</div><div class="stat-l">Products</div></div>
+    <div class="stat"><div class="stat-n">24/7</div><div class="stat-l">Support</div></div>
+    <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Legit</div></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-track" id="tickerTrack"></div></div>
+
+<!-- PRODUCTS -->
+<section class="section" id="products-section">
+  <div class="sec-head reveal">
+    <div class="sec-head-row">
+      <div><div class="sec-label">Inventory</div><h2 class="sec-title">THE STORE</h2></div>
+    </div>
+  </div>
+  <div class="filter-bar" id="filterBar"></div>
+  <div id="loadingGrid" class="loading-grid">
+    <div class="skeleton"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line short"></div><div class="skel-line" style="width:40%"></div></div></div>
+    <div class="skeleton"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line short"></div><div class="skel-line" style="width:40%"></div></div></div>
+    <div class="skeleton"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line short"></div><div class="skel-line" style="width:40%"></div></div></div>
+    <div class="skeleton"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line short"></div><div class="skel-line" style="width:40%"></div></div></div>
+    <div class="skeleton"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line short"></div><div class="skel-line" style="width:40%"></div></div></div>
+    <div class="skeleton"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line short"></div><div class="skel-line" style="width:40%"></div></div></div>
+  </div>
+  <div class="products-grid" id="productsGrid" style="display:none"></div>
+</section>
+
+<!-- TRUST -->
+<div class="trust reveal">
+  <div class="trust-grid">
+    <div class="trust-item"><div class="trust-num">01</div><span class="trust-icon">⚡</span><div class="trust-title">Instant Delivery</div><div class="trust-desc">Your digital goods handed off fast. No waiting, no queues.</div></div>
+    <div class="trust-item"><div class="trust-num">02</div><span class="trust-icon">🛡️</span><div class="trust-title">Buyer Protection</div><div class="trust-desc">Issues? Hit us up on Discord. We sort it out, every time.</div></div>
+    <div class="trust-item"><div class="trust-num">03</div><span class="trust-icon">💬</span><div class="trust-title">Direct Contact</div><div class="trust-desc">Real human behind every sale. No bots, no automated hell.</div></div>
+    <div class="trust-item"><div class="trust-num">04</div><span class="trust-icon">🔥</span><div class="trust-title">Always Stocked</div><div class="trust-desc">Fresh products added regularly. Check back often.</div></div>
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta-section reveal">
+  <div class="cta-bg"></div>
+  <h2 class="cta-title">READY TO <span>BUY?</span></h2>
+  <p class="cta-sub">Hit the button, DM us on Discord, and we'll sort you out. Fast, easy, no nonsense.</p>
+  <div class="cta-btns">
+    <a href="#products-section" class="btn btn-primary">Browse Products</a>
+    <a href="https://discord.gg/yRDud7tW" target="_blank" class="btn btn-ghost">Open Discord</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">NO MAN'S LAND</div>
+  <div class="foot-copy">© 2025 No Man's Land — All rights reserved</div>
+  <div class="foot-links">
+    <a onclick="smoothTo('#products-section')">Shop</a>
+    <a href="https://discord.gg/yRDud7tW" target="_blank">Discord</a>
+    <a onclick="openLogin()">Admin</a>
+  </div>
+</footer>
+
+<!-- ═══════════════ BUY MODAL ═══════════════ -->
+<div class="modal-overlay" id="buyOverlay">
+  <div class="buy-modal">
+    <button class="modal-close" onclick="closeModal('buyOverlay')">✕ Close</button>
+    <div class="modal-head">
+      <div class="modal-eyebrow">Purchase Inquiry</div>
+      <div class="modal-name" id="buyName">—</div>
+      <div class="modal-price" id="buyPrice">—</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-desc" id="buyDesc"></div>
+      <div class="discord-input-group">
+        <label class="discord-input-label">Your Discord Username (optional)</label>
+        <input type="text" class="discord-input" id="buyDiscordUsername" placeholder="e.g. yourname or @yourname">
+      </div>
+      <div class="modal-contact">
+        <div class="modal-contact-label">Seller contact</div>
+        <div class="modal-discord-tag">discord.gg/yRDud7tW · ID: 1429171703879307277</div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-discord" onclick="submitInquiry()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.056a19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.995a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+          Go to Discord & Buy
+        </button>
+        <button class="btn-cancel" onclick="closeModal('buyOverlay')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ LOGIN MODAL ═══════════════ -->
+<div class="modal-overlay" id="loginOverlay">
+  <div class="login-modal">
+    <button class="modal-close" onclick="closeModal('loginOverlay')">✕ Close</button>
+    <div class="login-head">
+      <div class="login-title">ADMIN ACCESS</div>
+      <div class="login-sub">No Man's Land Control Panel</div>
+    </div>
+    <div class="login-body">
+      <div class="login-error" id="loginError">Wrong password. Try again.</div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="loginPassword" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div style="margin-top:20px">
+        <button class="btn-save" style="width:100%;clip-path:none" onclick="doLogin()" id="loginBtn">Enter</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ ADMIN MODAL ═══════════════ -->
+<div class="modal-overlay" id="adminOverlay">
+  <div class="admin-modal">
+    <div class="admin-head">
+      <div class="admin-title">ADMIN PANEL</div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <button class="nav-btn" onclick="adminLogout()" style="color:var(--accent2)">Logout</button>
+        <button class="modal-close" style="position:static" onclick="closeModal('adminOverlay')">✕</button>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('products')">Products</button>
+      <button class="admin-tab" onclick="switchTab('inquiries')">Order Log</button>
+    </div>
+
+    <!-- PRODUCTS TAB -->
+    <div class="tab-content active" id="tab-products">
+      <div class="admin-section">
+        <div class="admin-section-title" id="formTitle">Create New Product</div>
+        <input type="hidden" id="editId">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Name *</label><input type="text" class="form-input" id="fName" placeholder="e.g. Netflix Premium"></div>
+          <div class="form-group"><label class="form-label">Price (USD) *</label><input type="number" class="form-input" id="fPrice" placeholder="9.99" step="0.01" min="0"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Category</label>
+            <select class="form-input" id="fCategory"><option>Accounts</option><option>Digital</option><option>Software</option><option>Gaming</option><option>Other</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Badge</label>
+            <select class="form-input" id="fBadge"><option value="">None</option><option value="NEW">NEW</option><option value="HOT">HOT</option><option value="SALE">SALE</option><option value="LIMITED">LIMITED</option><option value="SOON">SOON</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="fDesc" placeholder="Describe what the buyer gets..."></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Stock</label><input type="number" class="form-input" id="fStock" placeholder="999" min="0"></div>
+          <div class="form-group"><label class="form-label">Flags</label>
+            <div style="display:flex;gap:16px;margin-top:8px">
+              <label style="display:flex;align-items:center;gap:6px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted2);cursor:pointer"><input type="checkbox" id="fFeatured"> Featured</label>
+              <label style="display:flex;align-items:center;gap:6px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted2);cursor:pointer"><input type="checkbox" id="fComingSoon"> Coming Soon</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Product Image</label>
+          <div class="img-upload-area">
+            <input type="file" accept="image/*" id="fImage" onchange="previewImage(event)">
+            <div class="img-upload-icon">📷</div>
+            <div class="img-upload-text">Click to upload (max 10MB)</div>
+            <img class="img-preview" id="imgPreview" alt="Preview">
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-save" id="saveBtn" onclick="saveProduct()">Save Product</button>
+        <button class="btn-delete-prod" id="deleteBtn" style="display:none" onclick="deleteProduct()">Delete</button>
+        <button class="btn-cancel" onclick="resetForm()">Clear</button>
+      </div>
+      <div class="admin-section">
+        <div class="admin-section-title">Existing Products — click to edit</div>
+        <div class="prod-list" id="adminProdList"><div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);padding:12px">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- INQUIRIES TAB -->
+    <div class="tab-content" id="tab-inquiries">
+      <div class="admin-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+          <div class="admin-section-title" style="margin-bottom:0">Purchase Inquiries</div>
+          <button class="nav-btn" onclick="loadInquiries()" style="font-size:9px">↻ Refresh</button>
+        </div>
+        <div id="inquiryContainer"><div class="inq-empty">Loading inquiries...</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = window.location.origin + '/api';
+let adminToken = sessionStorage.getItem('nml_token') || null;
+let allProducts = [];
+let currentFilter = 'All';
+let currentBuyProduct = null;
+
+// ── CURSOR ─────────────────────────────────────────────────────────────────────
+const dot=document.getElementById('curDot'),ring=document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+(function anim(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim)})();
+document.querySelectorAll('a,button,.product-card,.prod-item').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{dot.style.transform='translate(-50%,-50%) scale(2)'});
+  el.addEventListener('mouseleave',()=>{dot.style.transform='translate(-50%,-50%) scale(1)'});
+});
+
+// ── TICKER ─────────────────────────────────────────────────────────────────────
+const tickerItems=['Digital Products','Accounts','Software','Gaming','Fast Delivery','Trusted Seller','Discord Support','No Gatekeeping','Real Prices','Premium Goods'];
+const doubled=[...tickerItems,...tickerItems];
+document.getElementById('tickerTrack').innerHTML=doubled.map(i=>`<span class="ticker-item">${i} <span class="ticker-sep">◆</span></span>`).join('');
+
+// ── REVEAL ─────────────────────────────────────────────────────────────────────
+const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');ro.unobserve(e.target)}}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(r=>ro.observe(r));
+
+function smoothTo(sel){document.querySelector(sel)?.scrollIntoView({behavior:'smooth'})}
+
+// ── TOAST ──────────────────────────────────────────────────────────────────────
+function toast(msg,err=false){const t=document.getElementById('toast');t.textContent=msg;t.className='toast'+(err?' error':'');void t.offsetWidth;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200)}
+
+// ── MODALS ─────────────────────────────────────────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.modal-overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')})});
+
+// ── TABS ───────────────────────────────────────────────────────────────────────
+function switchTab(name){
+  document.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',['products','inquiries'][i]===name));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='inquiries') loadInquiries();
+}
+
+// ── PRODUCTS ───────────────────────────────────────────────────────────────────
+async function loadProducts(){
+  try{
+    const res=await fetch(`${API}/products`);
+    allProducts=await res.json();
+    document.getElementById('statProducts').textContent=allProducts.filter(p=>!p.coming_soon).length;
+    buildFilters();
+    renderProducts(allProducts);
+    if(adminToken) renderAdminList(allProducts);
+  }catch(e){
+    document.getElementById('loadingGrid').innerHTML=`<div class="empty-state">⚠ Could not connect to server</div>`;
+  }
+}
+
+function buildFilters(){
+  const cats=['All',...new Set(allProducts.map(p=>p.category).filter(Boolean))];
+  document.getElementById('filterBar').innerHTML=cats.map(c=>`<button class="filter-btn${c==='All'?' active':''}" onclick="setFilter('${c}')">${c}</button>`).join('');
+}
+
+function setFilter(cat){
+  currentFilter=cat;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.textContent===cat));
+  const filtered=cat==='All'?allProducts:allProducts.filter(p=>p.category===cat);
+  renderProducts(filtered);
+}
+
+function renderProducts(products){
+  document.getElementById('loadingGrid').style.display='none';
+  const grid=document.getElementById('productsGrid');
+  grid.style.display='grid';
+  if(!products.length){grid.innerHTML=`<div class="empty-state">No products found</div>`;return}
+  grid.innerHTML=products.map(p=>`
+    <div class="product-card${p.coming_soon?' coming-soon':''}" onclick="${p.coming_soon?'void(0)':'openBuy('+JSON.stringify(p).replace(/"/g,'&quot;')+')'}">
+      <div class="pc-img">
+        ${p.image?`<img src="${p.image}" alt="${p.name}" loading="lazy">`:`<div class="pc-img-placeholder">NML</div>`}
+        <div class="pc-overlay"></div>
+        ${p.badge?`<div class="pc-badge badge-${p.badge.toLowerCase()}">${p.badge}</div>`:''}
+        ${!p.coming_soon?`<div class="pc-buy">Buy Now →</div>`:''}
+      </div>
+      <div class="pc-body">
+        <div class="pc-cat">${p.category||'Digital'}</div>
+        <div class="pc-name">${p.name}</div>
+        ${p.description?`<div class="pc-desc">${p.description.substring(0,90)}${p.description.length>90?'…':''}</div>`:''}
+        <div class="pc-foot">
+          <div class="pc-price">${p.coming_soon?'TBA':'$'+parseFloat(p.price).toFixed(2)}</div>
+          <div class="pc-stock">${p.coming_soon?'Coming Soon':p.stock>100?'In Stock':p.stock>0?p.stock+' left':'Out of Stock'}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderAdminList(products){
+  const list=document.getElementById('adminProdList');
+  if(!products.length){list.innerHTML=`<div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);padding:12px">No products yet</div>`;return}
+  list.innerHTML=products.map(p=>`
+    <div class="prod-item" onclick="loadEditForm(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+      ${p.image?`<img class="prod-item-img" src="${p.image}" alt="${p.name}">`:`<div class="prod-item-img" style="display:flex;align-items:center;justify-content:center;font-size:18px">📦</div>`}
+      <div><div class="prod-item-name">${p.name}</div><div class="prod-item-cat">${p.category||'Digital'}</div></div>
+      <div class="prod-item-price">${p.coming_soon?'TBA':'$'+parseFloat(p.price).toFixed(2)}</div>
+    </div>`).join('');
+}
+
+// ── BUY MODAL ─────────────────────────────────────────────────────────────────
+function openBuy(product){
+  currentBuyProduct=product;
+  document.getElementById('buyName').textContent=product.name;
+  document.getElementById('buyPrice').textContent='$'+parseFloat(product.price).toFixed(2);
+  document.getElementById('buyDesc').textContent=product.description||'Contact us on Discord for more details.';
+  document.getElementById('buyDiscordUsername').value='';
+  openModal('buyOverlay');
+}
+
+async function submitInquiry(){
+  if(!currentBuyProduct) return;
+  const username=document.getElementById('buyDiscordUsername').value.trim();
+
+  // Log inquiry to server
+  try{
+    await fetch(`${API}/inquiries`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        product_id: currentBuyProduct.id,
+        product_name: currentBuyProduct.name,
+        product_price: currentBuyProduct.price,
+        discord_username: username||'Not provided',
+        discord_id: null,
+        note: null
+      })
+    });
+  }catch(e){console.error('Inquiry log failed:',e)}
+
+  // Open Discord
+  window.open('https://discord.gg/yRDud7tW','_blank');
+  closeModal('buyOverlay');
+  toast('Opening Discord — send a DM to complete your purchase!');
+}
+
+// ── LOGIN ──────────────────────────────────────────────────────────────────────
+function openLogin(){openModal('loginOverlay');setTimeout(()=>document.getElementById('loginPassword').focus(),100)}
+
+async function doLogin(){
+  const pw=document.getElementById('loginPassword').value;
+  const errEl=document.getElementById('loginError');
+  const btn=document.getElementById('loginBtn');
+  errEl.style.display='none';btn.textContent='Checking...';btn.disabled=true;
+  try{
+    const res=await fetch(`${API}/admin/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})});
+    const data=await res.json();
+    if(res.ok){
+      adminToken=data.token;sessionStorage.setItem('nml_token',adminToken);
+      closeModal('loginOverlay');document.getElementById('loginPassword').value='';
+      openAdminPanel();toast('Welcome back, admin 🔫');
+    }else{errEl.style.display='block'}
+  }catch(e){errEl.textContent='Cannot reach server.';errEl.style.display='block'}
+  btn.textContent='Enter';btn.disabled=false;
+}
+
+function adminLogout(){adminToken=null;sessionStorage.removeItem('nml_token');closeModal('adminOverlay');toast('Logged out')}
+
+async function openAdminPanel(){
+  openModal('adminOverlay');
+  const res=await fetch(`${API}/products`);
+  const products=await res.json();
+  renderAdminList(products);
+}
+
+// ── ADMIN FORM ─────────────────────────────────────────────────────────────────
+function resetForm(){
+  document.getElementById('editId').value='';
+  document.getElementById('fName').value='';
+  document.getElementById('fPrice').value='';
+  document.getElementById('fDesc').value='';
+  document.getElementById('fCategory').value='Accounts';
+  document.getElementById('fBadge').value='';
+  document.getElementById('fStock').value='';
+  document.getElementById('fFeatured').checked=false;
+  document.getElementById('fComingSoon').checked=false;
+  document.getElementById('fImage').value='';
+  document.getElementById('imgPreview').style.display='none';
+  document.getElementById('formTitle').textContent='Create New Product';
+  document.getElementById('saveBtn').textContent='Save Product';
+  document.getElementById('deleteBtn').style.display='none';
+}
+
+function loadEditForm(p){
+  document.getElementById('editId').value=p.id;
+  document.getElementById('fName').value=p.name;
+  document.getElementById('fPrice').value=p.price;
+  document.getElementById('fDesc').value=p.description||'';
+  document.getElementById('fCategory').value=p.category||'Accounts';
+  document.getElementById('fBadge').value=p.badge||'';
+  document.getElementById('fStock').value=p.stock||999;
+  document.getElementById('fFeatured').checked=p.featured||false;
+  document.getElementById('fComingSoon').checked=p.coming_soon||false;
+  document.getElementById('formTitle').textContent='Editing: '+p.name;
+  document.getElementById('saveBtn').textContent='Update Product';
+  document.getElementById('deleteBtn').style.display='block';
+  if(p.image){const prev=document.getElementById('imgPreview');prev.src=p.image;prev.style.display='block'}
+  else{document.getElementById('imgPreview').style.display='none'}
+  document.getElementById('adminOverlay').scrollTop=0;
+}
+
+function previewImage(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{const prev=document.getElementById('imgPreview');prev.src=ev.target.result;prev.style.display='block'};
+  reader.readAsDataURL(file);
+}
+
+async function saveProduct(){
+  const id=document.getElementById('editId').value;
+  const name=document.getElementById('fName').value.trim();
+  const price=document.getElementById('fPrice').value;
+  if(!name||!price){toast('Name and price required',true);return}
+  const btn=document.getElementById('saveBtn');btn.textContent='Saving...';btn.disabled=true;
+  const fd=new FormData();
+  fd.append('name',name);fd.append('price',price);
+  fd.append('description',document.getElementById('fDesc').value);
+  fd.append('category',document.getElementById('fCategory').value);
+  fd.append('badge',document.getElementById('fBadge').value);
+  fd.append('stock',document.getElementById('fStock').value||999);
+  fd.append('featured',document.getElementById('fFeatured').checked);
+  fd.append('coming_soon',document.getElementById('fComingSoon').checked);
+  const imgFile=document.getElementById('fImage').files[0];
+  if(imgFile)fd.append('image',imgFile);
+  try{
+    const url=id?`${API}/products/${id}`:`${API}/products`;
+    const res=await fetch(url,{method:id?'PUT':'POST',headers:{'Authorization':'Bearer '+adminToken},body:fd});
+    if(res.ok){toast(id?'Product updated!':'Product created! 🔥');resetForm();loadProducts()}
+    else{const err=await res.json();toast(err.error||'Error',true)}
+  }catch(e){toast('Server error',true)}
+  btn.textContent=id?'Update Product':'Save Product';btn.disabled=false;
+}
+
+async function deleteProduct(){
+  const id=document.getElementById('editId').value;
+  if(!id)return;
+  if(!confirm('Delete this product? Cannot be undone.'))return;
+  try{
+    const res=await fetch(`${API}/products/${id}`,{method:'DELETE',headers:{'Authorization':'Bearer '+adminToken}});
+    if(res.ok){toast('Deleted');resetForm();loadProducts()}
+    else toast('Failed to delete',true);
+  }catch(e){toast('Server error',true)}
+}
+
+// ── INQUIRIES ──────────────────────────────────────────────────────────────────
+async function loadInquiries(){
+  const container=document.getElementById('inquiryContainer');
+  container.innerHTML='<div class="inq-empty">Loading...</div>';
+  try{
+    const res=await fetch(`${API}/inquiries`,{headers:{'Authorization':'Bearer '+adminToken}});
+    const inquiries=await res.json();
+    if(!inquiries.length){container.innerHTML='<div class="inq-empty">No inquiries yet</div>';return}
+    container.innerHTML=`
+      <table class="inquiry-table">
+        <thead><tr><th>Product</th><th>Price</th><th>Discord User</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody>${inquiries.map(inq=>`
+          <tr>
+            <td><div class="inq-product">${inq.product_name}</div></td>
+            <td><div class="inq-price">$${parseFloat(inq.product_price||0).toFixed(2)}</div></td>
+            <td><div class="inq-user">${inq.discord_username||'—'}</div></td>
+            <td><div class="inq-date">${new Date(inq.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div></td>
+            <td><button class="status-badge status-${inq.status||'pending'}" onclick="cycleStatus('${inq.id}','${inq.status||'pending'}')">${inq.status||'pending'}</button></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }catch(e){container.innerHTML='<div class="inq-empty">Error loading inquiries</div>'}
+}
+
+async function cycleStatus(id,current){
+  const next={pending:'done',done:'cancelled',cancelled:'pending'}[current]||'pending';
+  try{
+    await fetch(`${API}/inquiries/${id}`,{method:'PATCH',headers:{'Authorization':'Bearer '+adminToken,'Content-Type':'application/json'},body:JSON.stringify({status:next})});
+    loadInquiries();
+  }catch(e){toast('Update failed',true)}
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+loadProducts();
+</script>
+</body>
+</html>
