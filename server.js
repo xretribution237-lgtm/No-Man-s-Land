@@ -18,7 +18,7 @@ const INQUIRY_CHANNEL_ID = '1472992778173812756';
 
 // ── PostgreSQL ─────────────────────────────────────────────────────────────────
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.PG_URL,
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
 
